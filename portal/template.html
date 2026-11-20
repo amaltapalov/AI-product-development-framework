@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conversational AI Design Framework</title>
+  <meta name="description" content="A seven-phase way for Product, Design, Development and Data Science to build conversational AI products that solve a real problem, give correct answers and fail safely.">
+  <script>
+    /* Apply the saved theme before first paint to avoid a flash */
+    (function () {
+      try {
+        var t = JSON.parse(localStorage.getItem('cadf.theme.v1') || 'null');
+        if (t === 'dark' || (t === null && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <button class="nav-toggle btn btn--ghost btn--icon" aria-label="Open chapter list" aria-expanded="false" aria-controls="sidebar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <a class="brand" href="#/">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__text">Conversational AI<strong>Design Framework</strong></span>
+      </a>
+      <nav class="top-nav" aria-label="Primary">
+        <a href="#/" data-nav="home">Chapters</a>
+        <a href="#/lifecycle" data-nav="lifecycle">Lifecycle</a>
+        <a href="#/roles" data-nav="roles">Roles</a>
+        <a href="#/templates" data-nav="templates">Templates</a>
+      </nav>
+      <div class="header-tools">
+        <div class="search">
+          <label class="visually-hidden" for="search-input">Search the framework</label>
+          <input id="search-input" type="search" placeholder="Search" autocomplete="off">
+          <kbd>/</kbd>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <div class="search__results" role="listbox" hidden></div>
+        </div>
+        <div class="role-select">
+          <label class="visually-hidden" for="role-select">Show my part for role</label>
+          <select id="role-select">
+            <option value="">All roles</option>
+          </select>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+        <button class="btn btn--ghost btn--icon theme-toggle" type="button" aria-label="Switch to dark mode">
+          <svg class="i-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <svg class="i-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar" aria-label="Chapters"></aside>
+    <main id="main" class="main" tabindex="-1"></main>
+  </div>
+
+  <button class="to-top" type="button" aria-label="Back to top">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner" id="footer"></div>
+  </footer>
+
+  <script>window.FRAMEWORK_MD = /*__FRAMEWORK_MD__*/;</script>
+  <script src="app.js"></script>
+</body>
+</html>

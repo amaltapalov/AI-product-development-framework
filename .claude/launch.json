@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "usertown-style-ref",
+      "url": "https://waw-usertown-dev-westeurope-01.azurewebsites.net/"
+    },
+    {
+      "name": "pair-layout-ref",
+      "url": "https://pair.withgoogle.com/guidebook/chapters"
+    },
+    {
+      "name": "portal",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8123", "--directory", "portal"],
+      "port": 8123
+    }
+  ]
+}

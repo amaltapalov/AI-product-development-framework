@@ -340,16 +340,6 @@
     root.querySelectorAll('.ws-phase').forEach(sec => { sec.hidden = ![...sec.querySelectorAll('.ws-field')].some(el => !el.hidden); });
     root.querySelectorAll('textarea').forEach(autosize);
   }
-  function inlineHtml(phase) {
-    const fs = FIELDS.filter(f => f.phase.toLowerCase() === phase.toLowerCase());
-    return `<div class="ws-inline__head">
-        <div><span class="tag tag--neutral">AI Use Case Canvas</span><h3 class="ws-inline__title">Your canvas · ${esc(fs[0].phase)}</h3>
-        <p>The rows this phase fills in. Answers are saved to the project below and appear in the full canvas.</p></div>
-        <a class="link-arrow" href="#/templates/${ANCHOR.canvas}">Full canvas ${arrow}</a>
-      </div>
-      <div class="ws-inline__bar">${barHtml(true)}${prog(fs[0].phase)}</div>
-      ${fs.map(f => fieldCard(f, 4)).join('')}`;
-  }
   function repaintField(f, focusEl) {
     const want = focusEl && ['act', 'set', 'val', 'i'].filter(k => focusEl.dataset[k] != null).map(k => `[data-${k}="${CSS.escape(focusEl.dataset[k])}"]`).join('');
     document.querySelectorAll(`#main .ws-field[data-key="${f.key}"]`).forEach(card => {
@@ -647,19 +637,13 @@
   function paint(root) {
     const r = root.dataset.root;
     root.innerHTML = r === 'bar' ? barHtml(false) : r === 'canvas' ? canvasHtml() : r === 'eval' ? evalHtml()
-      : r === 'critique' ? critiqueHtml() : r === 'inline' ? inlineHtml(root.dataset.phase) : '';
+      : r === 'critique' ? critiqueHtml() : '';
     if (r === 'canvas') applyFilter(root);
     root.querySelectorAll('textarea').forEach(autosize);
   }
   const repaintAll = () => $main.querySelectorAll('.ws-root').forEach(paint);
-  function homeCard() {
-    const el = document.querySelector('[data-canvas-home]');
-    if (!el || !FIELDS.length) return;
-    const c = counts(FIELDS);
-    el.textContent = `${P().name}: ${c.agreed} of ${c.n} agreed`;
-  }
   function mount(chapter) {
-    if (!chapter) { homeCard(); return; }
+    if (!chapter) return;
     const art = $main.querySelector('.article');
     if (!art) return;
     if (chapter.slug === 'templates') {
@@ -668,14 +652,6 @@
       bar.dataset.root = 'bar';
       art.prepend(bar);
       art.querySelectorAll('.tool[data-tool]').forEach(m => { m.classList.add('ws-root', 'ws-tool'); m.dataset.root = m.dataset.tool; });
-    } else if (chapter.phase && FIELDS.some(f => f.chapter === chapter)) {
-      const box = document.createElement('section');
-      box.className = 'ws-root ws-inline card';
-      box.dataset.root = 'inline';
-      box.dataset.phase = chapter.title;
-      box.setAttribute('aria-label', 'Your canvas for this phase');
-      const gate = art.querySelector('.callout--gate');
-      if (gate) gate.before(box); else art.append(box);
     }
     repaintAll();
   }

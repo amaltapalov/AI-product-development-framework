@@ -368,26 +368,14 @@
   const $main = document.getElementById('main');
   const $sidebar = document.getElementById('sidebar');
 
-  function thumb(c) {
-    const v = c.phase % 3;
-    const bars = v === 0 ? '<i class="k" style="width:58%"></i><i style="width:46%"></i><i style="width:36%"></i><i class="o" style="width:30%"></i>'
-      : v === 1 ? '<i class="k" style="width:44%"></i><i class="k" style="width:30%"></i><i style="width:52%"></i><i class="o" style="width:24%"></i>'
-      : '<i class="k" style="width:36%"></i><i style="width:60%"></i><i style="width:48%"></i><i style="width:40%"></i><i class="o" style="width:20%"></i>';
-    return `<div class="thumb" aria-hidden="true">${bars}<b>${c.phase}</b></div>`;
-  }
-
   function card(c) {
-    const p = progressOf(c);
-    const foot = c.phase
-      ? `${p.total ? `<div class="progress" title="${p.done} of ${p.total} gate checks"><span style="width:${p.pct}%"></span></div><span>${p.done}/${p.total}</span>` : ''}<span class="link-arrow">${arrow}</span>`
-      : `<span class="link-arrow">Read ${arrow}</span>`;
     return `<a class="card" href="#/${c.slug}">
-      <span><span class="tag${c.phase ? '' : ' tag--neutral'}">${c.phase ? `Phase ${c.phase}` : esc(c.group)}</span></span>
+      <span>${c.phase ? `<span class="tag">Phase ${c.phase}</span>`
+        : c.group === 'Running it' ? '<span class="tag">In progress</span>'
+        : `<span class="tag tag--neutral">${esc(c.group)}</span>`}</span>
       <h3>${esc(c.title)}</h3>
       <p>${c.phase ? inline(c.question) : esc(c.summary)}</p>
       ${c.phase && c.lead ? `<p class="card__lead">Lead: <b>${esc(plain(c.lead))}</b></p>` : ''}
-      ${c.phase ? thumb(c) : ''}
-      <div class="card__foot">${foot}</div>
     </a>`;
   }
 
@@ -480,8 +468,6 @@
               <span><span class="tag tag--neutral">Template</span></span>
               <h3>AI Use Case Canvas</h3>
               <p>The team's single working document. Each phase fills its own rows.</p>
-              <div class="thumb" aria-hidden="true"><i class="k" style="width:40%"></i><i style="width:80%"></i><i style="width:80%"></i><i style="width:80%"></i><i style="width:56%"></i></div>
-              <div class="card__foot"><span data-canvas-home></span><span class="link-arrow">Open canvas ${arrow}</span></div>
             </a>` : ''}
           </div>
         </div>

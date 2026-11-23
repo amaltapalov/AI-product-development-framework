@@ -236,14 +236,7 @@ body.is-home .sidebar { display: none; }
 a.card:hover { color: var(--foreground); box-shadow: 0 0 0 1px color-mix(in srgb, var(--foreground) 25%, transparent), var(--shadow-md); transform: translateY(-2px); }
 .card h3 { margin: 14px 0 6px; font-size: 18px; line-height: 24px; letter-spacing: -0.02em; }
 .card p { margin: 0; color: var(--muted-foreground); }
-.card__foot { margin-top: auto; padding-top: 20px; display: flex; align-items: center; gap: 10px; font-size: 12px; line-height: 16px; color: var(--muted-foreground); }
-.card__foot .link-arrow { margin-left: auto; font-size: 14px; }
 
-.thumb { position: relative; height: 104px; margin-top: 20px; padding: 14px; overflow: hidden; border-radius: var(--radius); background: var(--muted); }
-.thumb i { display: block; height: 5px; margin-bottom: 8px; border-radius: 3px; background: color-mix(in srgb, var(--foreground) 14%, transparent); }
-.thumb i.k { height: 6px; background: var(--foreground); }
-.thumb i.o { height: 10px; margin-top: 12px; border-radius: 999px; background: var(--brand); }
-.thumb b { position: absolute; right: 14px; bottom: 4px; font-size: 52px; line-height: 1; font-weight: 700; letter-spacing: -0.05em; color: var(--foreground); opacity: .9; }
 
 .progress { flex: 1; max-width: 96px; height: 6px; border-radius: 999px; background: var(--muted); overflow: hidden; }
 .progress > span { display: block; height: 100%; border-radius: inherit; background: var(--primary); transition: width .3s var(--ease); }
@@ -525,15 +518,6 @@ ul.tasks li:last-child { border-bottom: 0; }
 .ws-yn { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .ws-checks .check { padding: 6px 2px; }
 .ws-root .check input { width: 16px; min-height: 0; height: 16px; padding: 0; margin-top: 2px; }
-
-/* Inline canvas on phase pages */
-.ws-inline { margin: 36px 0 28px; padding: 20px 24px; background: var(--section); }
-.ws-inline__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
-.article .ws-inline__title { margin: 10px 0 4px; font-size: 18px; line-height: 24px; }
-.article .ws-inline__head p { margin: 0; font-size: 14px; line-height: 20px; color: var(--muted-foreground); }
-.ws-inline__head .link-arrow { flex: none; font-size: 14px; }
-.ws-inline__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin: 16px 0 12px; }
-.ws-inline__bar .ws-bar { flex: 1; }
 
 /* Evaluation sheet */
 .ws-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.3fr); gap: 1px; margin: 0 0 16px; overflow: hidden; border-radius: var(--radius-xl); background: var(--border); box-shadow: 0 0 0 1px var(--hairline); }

@@ -6,7 +6,6 @@
 
   const MD = window.FRAMEWORK_MD || '';
   const STORE_CHECKS = 'cadf.checks.v1';
-  const STORE_ROLE = 'cadf.role.v1';
   const STORE_THEME = 'cadf.theme.v1';
   const MERMAID_LOCAL = './vendor/mermaid.esm.min.mjs';
   const MERMAID_CDN = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
@@ -200,14 +199,17 @@
     return h + `</${tag}>`;
   }
 
+  // Templates whose static table or list is replaced by an interactive tool (portal/workspace.js).
+  const TOOLS = [[/^AI Use Case Canvas/i, 'canvas'], [/^Evaluation sheet/i, 'eval'], [/^Review questions/i, 'critique']];
   function render(mdLines, chapterSlug, opts = {}) {
     const out = [], checks = [], toc = [], ids = {};
-    let goal = null, openCallout = false, depth = 2;
+    let goal = null, openCallout = false, depth = 2, tool = null;
     const uid = (s) => { let id = slugify(s); if (ids[id]) id += '-' + (++ids[id]); else ids[id] = 1; return id; };
     const close = () => { if (openCallout) { out.push('</div>'); openCallout = false; } };
     const heading = (level, text, inToc = true) => {
       if (level <= 3) close();
       const t = plain(text).replace(/:$/, '');
+      if (level <= 3) tool = chapterSlug === 'templates' && level === 3 ? ((TOOLS.find(([re]) => re.test(t)) || [])[1] || null) : null;
       const id = uid(t);
       let kind = null;
       if (level === 3 && /^(Example\b|Running example$)/i.test(t)) kind = 'example';
@@ -263,6 +265,7 @@
       if (line.trim().startsWith('|')) {
         const rows = [];
         while (i < mdLines.length && mdLines[i].trim().startsWith('|')) rows.push(mdLines[i++]);
+        if (tool) { out.push(`<div class="tool" data-tool="${tool}"></div>`); tool = null; continue; }
         out.push(tableHtml(parseTable(rows)));
         continue;
       }
@@ -277,6 +280,7 @@
           else items.push(item);
           i++;
         }
+        if (tool) { out.push(`<div class="tool" data-tool="${tool}"></div>`); tool = null; continue; }
         out.push(listHtml(items, chapterSlug, checks));
         continue;
       }
@@ -353,7 +357,6 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } },
   };
   let checked = store.get(STORE_CHECKS, {});
-  let role = ROLES.includes(store.get(STORE_ROLE, '')) ? store.get(STORE_ROLE, '') : '';
   const progressOf = (c) => {
     const total = c.checks.length, done = c.checks.filter(k => checked[k]).length;
     return { total, done, pct: total ? Math.round(done / total * 100) : 0 };
@@ -391,14 +394,12 @@
   function roleCards() {
     return ROLES.filter(r => roleProfile[r]).map(r => {
       const p = roleProfile[r];
-      const on = role === r;
-      return `<button type="button" class="card role-card" data-pick-role="${esc(r)}" aria-pressed="${on}">
+      return `<div class="card role-card">
         <span class="role-mark">${svg(ROLE_ICONS[r], 18)}</span>
         <h3>${esc(r)}</h3>
         <p class="q">${inline(p['Question they own'] || '')}</p>
         <p class="owns">${inline(p['Owns'] || '')}</p>
-        <div class="card__foot"><span class="pick">${on ? `${svg('<path d="M20 6 9 17l-5-5"/>')} My role` : 'This is my role'}</span></div>
-      </button>`;
+      </div>`;
     }).join('');
   }
 
@@ -462,9 +463,9 @@
       <section class="home-section" aria-labelledby="g-roles">
         <div class="wrap">
           <div class="section-head"><div><h2 id="g-roles">Four roles, one product.</h2>
-            <p>Each role owns a different question. Pick yours, and every phase shows what you do and what you hand over.</p></div>
+            <p>Each role owns a different question. Every phase shows who leads, who contributes and who reviews.</p></div>
             <a class="btn btn--outline" href="#/roles">How roles work together</a></div>
-          <div class="grid grid--4" data-role-cards>${roleCards()}</div>
+          <div class="grid grid--4">${roleCards()}</div>
         </div>
       </section>` : ''}
 
@@ -480,7 +481,7 @@
               <h3>AI Use Case Canvas</h3>
               <p>The team's single working document. Each phase fills its own rows.</p>
               <div class="thumb" aria-hidden="true"><i class="k" style="width:40%"></i><i style="width:80%"></i><i style="width:80%"></i><i style="width:80%"></i><i style="width:56%"></i></div>
-              <div class="card__foot"><span class="link-arrow">Open template ${arrow}</span></div>
+              <div class="card__foot"><span data-canvas-home></span><span class="link-arrow">Open canvas ${arrow}</span></div>
             </a>` : ''}
           </div>
         </div>
@@ -514,6 +515,7 @@
     };
     $main.querySelectorAll('[data-demo]').forEach(b => b.addEventListener('click', () => show(+b.dataset.demo)));
     show(0);
+    document.dispatchEvent(new CustomEvent('cadf:render', { detail: { chapter: null } }));
   }
 
   function rolePanel(c) {
@@ -521,14 +523,11 @@
     if (!leads && !Object.keys(c.who || {}).length) return '';
     const strip = ROLES.map(r => {
       const sym = leads && leads[r];
-      return `<button type="button" data-pick-role="${esc(r)}" aria-pressed="${role === r}"><b>${esc(r)}</b><small>${sym ? `${cellHtml(sym)} ${SYMBOLS[sym] ? SYMBOLS[sym][1] : ''}` : '&nbsp;'}</small></button>`;
+      return `<div><b>${esc(r)}</b><small>${sym ? `${cellHtml(sym)} ${SYMBOLS[sym] ? SYMBOLS[sym][1] : ''}` : '&nbsp;'}</small></div>`;
     }).join('');
-    const part = role && c.who && c.who[role]
-      ? `<div class="role-part">${Object.entries(c.who[role]).map(([k, v]) => `<div><b>${esc(k)}</b>${inline(v)}</div>`).join('')}</div>` : '';
     return `<section class="card role-panel" aria-label="Roles in this phase">
-      <div class="role-panel__head"><h3>${role ? `Your part, as ${esc(role)}` : 'Who does what in this phase'}</h3>
-      <span>${role ? 'Click your role again to clear it' : 'Pick your role to see your part'}</span></div>
-      <div class="role-strip">${strip}</div>${part}</section>`;
+      <div class="role-panel__head"><h3>Who does what in this phase</h3></div>
+      <div class="role-strip">${strip}</div></section>`;
   }
 
   function renderChapter(c, sectionId) {
@@ -558,8 +557,8 @@
         ${next ? `<a class="next" href="#/${next.slug}"><small>Next</small><strong>${esc(next.title)}</strong></a>` : ''}
       </nav>`;
 
+    document.dispatchEvent(new CustomEvent('cadf:render', { detail: { chapter: c } }));
     wireChecks();
-    applyRole();
     renderSidebar(c);
     renderDiagrams();
     watchScroll();
@@ -636,29 +635,6 @@
     });
   }
 
-  /* Role selection */
-  const $roleSelect = document.getElementById('role-select');
-  ROLES.forEach(r => $roleSelect.insertAdjacentHTML('beforeend', `<option value="${esc(r)}">${esc(r)}</option>`));
-  function setRole(r, toggle = true) {
-    role = toggle && r === role ? '' : r;
-    store.set(STORE_ROLE, role);
-    const c = bySlug[currentRoute().slug];
-    const panel = $main.querySelector('.role-panel');
-    if (c && c.phase && panel) panel.outerHTML = rolePanel(c);
-    const rc = $main.querySelector('[data-role-cards]');
-    if (rc) rc.innerHTML = roleCards();
-    applyRole();
-  }
-  function applyRole() {
-    if (role) document.documentElement.dataset.role = role; else delete document.documentElement.dataset.role;
-    $roleSelect.value = role;
-    $roleSelect.classList.toggle('has-role', !!role);
-    $main.querySelectorAll('[data-col-role]').forEach(el => el.classList.toggle('is-role', !!role && el.dataset.colRole === role));
-    $main.querySelectorAll('tr[data-row-role]').forEach(el => el.classList.toggle('is-role-row', !!role && el.dataset.rowRole === role));
-    $main.querySelectorAll('[data-pick-role]').forEach(b => { b.onclick = () => setRole(b.dataset.pickRole); });
-  }
-  $roleSelect.addEventListener('change', () => setRole($roleSelect.value, false));
-
   /* ------------------------------------------------------------------
      Diagrams (Mermaid, themed to xDS, re-rendered on theme change)
      ------------------------------------------------------------------ */
@@ -667,7 +643,7 @@
   const isDark = () => document.documentElement.classList.contains('dark');
   function mermaidConfig() {
     const font = getComputedStyle(document.body).fontFamily;
-    const common = { fontFamily: font, fontSize: '14px' };
+    const common = { fontFamily: font, fontSize: '16px' };
     const vars = isDark() ? {
       darkMode: true, background: '#161616', primaryColor: '#242424', primaryTextColor: '#fafafa', primaryBorderColor: '#4f4f4f',
       secondaryColor: '#303030', tertiaryColor: '#1b1b1b', lineColor: '#949494', textColor: '#fafafa', mainBkg: '#242424', nodeBorder: '#4f4f4f',
@@ -866,7 +842,7 @@
     const c = bySlug[slug];
     document.body.classList.toggle('is-home', !c);
     document.querySelectorAll('.top-nav a').forEach(a => a.classList.toggle('is-active', a.dataset.nav === (c ? c.slug : 'home')));
-    if (!c) { lastSlug = null; renderHome(); applyRole(); window.scrollTo(0, 0); return; }
+    if (!c) { lastSlug = null; renderHome(); window.scrollTo(0, 0); return; }
     if (lastSlug === slug && section) {
       const el = document.getElementById(section);
       if (el) { el.scrollIntoView(); return; }
@@ -876,5 +852,10 @@
     $main.focus({ preventScroll: true });
   }
   window.addEventListener('hashchange', route);
+
+  window.CADF = {
+    esc, inline, plain, slugify, svg, store, tablesIn, roleOf, bySlug, CHAPTERS, ROLES, docTitle, version,
+    current: () => bySlug[currentRoute().slug] || null,
+  };
   route();
 })();

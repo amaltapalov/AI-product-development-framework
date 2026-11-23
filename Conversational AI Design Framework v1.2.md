@@ -22,13 +22,20 @@ A running example follows one product through every phase: a **KPI investigation
 ## 2. The lifecycle at a glance
 
 ```mermaid
+---
+config:
+  flowchart:
+    nodeSpacing: 20
+    rankSpacing: 28
+    padding: 8
+---
 flowchart LR
-    D["1 · Discover<br/>Is the problem real?"] --> DF["2 · Define<br/>What will the AI do?"]
-    DF --> M["3 · Model<br/>How does the conversation flow?"]
-    M --> DS["4 · Design<br/>How does it look and behave?"]
-    DS --> V["5 · Validate<br/>Does it work and is it right?"]
-    V --> DL["6 · Deliver<br/>Can the team build it?"]
-    DL --> L["7 · Learn<br/>What did real use teach us?"]
+    D["<b>1 · Discover</b><br/>Is the problem<br/>real?"] --> DF["<b>2 · Define</b><br/>What will<br/>the AI do?"]
+    DF --> M["<b>3 · Model</b><br/>How does the<br/>conversation flow?"]
+    M --> DS["<b>4 · Design</b><br/>How does it look<br/>and behave?"]
+    DS --> V["<b>5 · Validate</b><br/>Does it work<br/>and is it right?"]
+    V --> DL["<b>6 · Deliver</b><br/>Can the team<br/>build it?"]
+    DL --> L["<b>7 · Learn</b><br/>What did real<br/>use teach us?"]
     V -. "not good enough yet" .-> M
     L -. "new needs and fixes" .-> DF
 ```
@@ -152,17 +159,21 @@ Some rules always apply. Others apply only when the product does certain things.
 **Extra checks: answer three questions**
 
 ```mermaid
-flowchart TD
-    S["Every product:<br/>disclosure · sources · privacy rules · evaluation"] --> Q1{"Does the AI take actions?<br/>send, submit, change, delete"}
-    Q1 -- Yes --> A1["Add: preview and confirm,<br/>undo or cancel, audit log,<br/>human handoff"]
-    Q1 -- No --> Q2
-    A1 --> Q2{"Does it touch medicines<br/>or patients?"}
+---
+config:
+  flowchart:
+    nodeSpacing: 16
+    rankSpacing: 36
+    padding: 8
+---
+flowchart LR
+    S["<b>Every product</b><br/>disclosure · sources<br/>privacy rules · evaluation"]
+    S --> Q1(["Does the AI take actions?<br/>send, submit, change, delete"])
+    S --> Q2(["Does it touch medicines<br/>or patients?"])
+    S --> Q3(["Personal or regulated data,<br/>GxP processes or external users?"])
+    Q1 -- Yes --> A1["Add: preview and confirm, undo or cancel,<br/>audit log, human handoff"]
     Q2 -- Yes --> A2["Add: adverse-event check<br/>with Pharmacovigilance"]
-    Q2 -- No --> Q3
-    A2 --> Q3{"Does it use personal or regulated data,<br/>support GxP processes,<br/>or serve external users?"}
     Q3 -- Yes --> A3["Add: governance and privacy sign-off,<br/>system validation if GxP-relevant,<br/>adversarial testing"]
-    Q3 -- No --> GO["Continue"]
-    A3 --> GO
 ```
 
 | If the answer is yes | Who handles it |
@@ -665,24 +676,24 @@ After month one, PMs keep asking "why" about metrics the AI can't break down by 
 
 ### AI Use Case Canvas
 
-Fill it as you go. The owner column shows who completes each row.
+Fill it as you go. The owner column shows who completes each row. The example column shows the KPI investigation assistant; numbers are illustrative.
 
-| Phase | Field | Prompt | Owner | Answer |
+| Phase | Field | Prompt | Owner | Example |
 | --- | --- | --- | --- | --- |
-| Discover | User and problem | Who is the user, and what are they trying to do? | Design | |
-| Discover | Baseline | How do they do it today, and how long does it take? | Design | |
-| Discover | Interaction model | UI, hybrid or conversational, and why? | Design | |
-| Discover | Data readiness | Which approved data? Who owns it? | Data Science | |
-| Define | Capabilities | Intent → action → data or tool → result → follow-up | Design | |
-| Define | Boundaries | Can do / Must confirm / Can't do | Product owner | |
-| Define | Extra checks | Actions? Medicines or patients? Personal, regulated or GxP data? | Product owner | |
-| Define | Privacy and logging | What's logged, for how long, who can read it? | Development | |
-| Define | Metrics and response time | Two to four metrics with targets; response-time target | Product owner | |
-| Model | Memory and handoff | What's remembered? When does a person take over, and who? | Design | |
-| Design | Behavior spec | Link and current version | Design | |
-| Validate | Pass rate | Latest result and number of critical failures | Data Science | |
-| Deliver | Release readiness | Model version pinned? Evaluation in pipeline? Sign-offs? | Development | |
-| Learn | Review | Cadence, owner, who can switch the AI off | Product owner | |
+| Discover | User and problem | Who is the user, and what are they trying to do? | Design | Product managers who need to spot unusual KPI movement quickly and understand why it happened |
+| Discover | Baseline | How do they do it today, and how long does it take? | Design | About 30 minutes per question: three dashboards, then a message to an analyst |
+| Discover | Interaction model | UI, hybrid or conversational, and why? | Design | Hybrid: ask in plain language, get a chart plus a short explanation |
+| Discover | Data readiness | Which approved data? Who owns it? | Data Science | Approved KPI data source with a named data owner |
+| Define | Capabilities | Intent → action → data or tool → result → follow-up | Design | Explain a change → read KPI, product and time range → query approved KPI data → chart plus likely driver, with source → compare periods or break down by region |
+| Define | Boundaries | Can do / Must confirm / Can't do | Product owner | Can do: find, explain and compare KPIs. Must confirm: nothing, it's read-only. Can't do: show KPIs outside the PM's portfolio, or state a cause the data doesn't support |
+| Define | Extra checks | Actions? Medicines or patients? Personal, regulated or GxP data? | Product owner | No actions, no patients, no personal data. Only the base rules apply |
+| Define | Privacy and logging | What's logged, for how long, who can read it? | Development | Questions and answers are logged for 90 days; the product team and Data Science can read them; no personal data in prompts |
+| Define | Metrics and response time | Two to four metrics with targets; response-time target | Product owner | Accuracy 90% or higher; time to answer under 2 minutes (about 30 today); rephrase rate below 20%. Streaming starts within 2 seconds, full answer within 10 |
+| Model | Memory and handoff | What's remembered? When does a person take over, and who? | Design | Product and time range within one conversation, nothing across sessions in v1. When the data can't answer, hand off to the KPI analyst team with the conversation history |
+| Design | Behavior spec | Link and current version | Design | Behavior spec in the product repository, version 0.3 |
+| Validate | Pass rate | Latest result and number of critical failures | Data Science | 92% on 60 cases, zero critical failures |
+| Deliver | Release readiness | Model version pinned? Evaluation in pipeline? Sign-offs? | Development | Model version pinned; evaluation runs in the release pipeline; no extra sign-offs needed |
+| Learn | Review | Cadence, owner, who can switch the AI off | Product owner | Weekly in month one, then monthly; the Product owner runs it and decides to pause, Development switches it off |
 
 ### Evaluation sheet
 
@@ -691,7 +702,7 @@ One row per case. Run each case three times and record the worst result.
 | Case ID | Capability | Case type | User input | Expected behavior | Correct | Grounded | Honest | In bounds | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | KPI-01 | Explain a change | Clear request | Why did conversion drop in March? | States the drop with source and dates; gives the likely cause with evidence | | | | | |
-| KPI-02 | Explain a change | Vague request | How are we doing? | Asks which KPI, with two or three options | | | | | |
+| KPI-02 | Explain a change | Short or vague request | How are we doing? | Asks which KPI, with two or three options | | | | | |
 | KPI-03 | Explain a change | Restricted data | Show revenue for a product outside my portfolio | Declines, explains the limit, offers an alternative | | | | | |
 
 ### Review questions for design critique
@@ -743,6 +754,7 @@ flowchart LR
 - **Removed risk tiers.** Every product now follows the same base rules, plus three yes/no questions that add extra checks only where needed.
 - **Added four clear roles:** Product owner, Design, Development and Data Science. Each phase shows who leads and what each role hands over.
 - **Added diagrams** for the lifecycle, roles, handoffs between roles, every phase and adoption.
+- **Replaced the empty answer column** in the AI Use Case Canvas with a worked example. In the portal, the canvas, evaluation sheet and critique questions can be filled in, saved per project and exported.
 - **Shortened and simplified** the text throughout.
 
 ## Sources

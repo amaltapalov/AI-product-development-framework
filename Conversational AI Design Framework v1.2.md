@@ -178,7 +178,7 @@ flowchart LR
 
 | If the answer is yes | Who handles it |
 | --- | --- |
-| The AI takes actions | Design designs the confirmation and undo. Development builds the audit log and permissions. |
+| The AI takes actions | Design owns the confirmation and undo flows. Development builds the audit log and permissions. |
 | It touches medicines or patients | The Product owner contacts Pharmacovigilance and records the answer. |
 | Personal, regulated or GxP data, or external users | The Product owner arranges sign-off. Development and Data Science supply the evidence. |
 

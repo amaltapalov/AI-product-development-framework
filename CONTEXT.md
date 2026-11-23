@@ -22,7 +22,7 @@ Author: Amal Tapalov. Current version: **v1.2** (draft for team review, November
 | `DESIGN.md` | xDS design system reference (tokens, type, spacing, components, do/don't) |
 | `portal/build.py` | Inlines the newest framework Markdown into `template.html` and writes `index.html` |
 | `portal/template.html` | Page shell. Contains the `/*__FRAMEWORK_MD__*/` placeholder. |
-| `portal/app.js` | Markdown renderer, chapters, hash routing, role picker, gate checklists, Mermaid, search. Exposes `window.CADF`. |
+| `portal/app.js` | Markdown renderer, chapters, hash routing, role panels, gate checklists, Mermaid, search. Exposes `window.CADF`. |
 | `portal/workspace.js` | Fillable templates (canvas, evaluation sheet, critique questions), projects, export and import. Reads from `window.CADF`. |
 | `portal/styles.css` | All styling. xDS tokens for light and dark mode are at the top. |
 | `portal/index.html` | **Generated, but committed.** Never edit by hand. |
@@ -63,7 +63,7 @@ Framework vX.Y.md ──build.py──▶ template.html + JSON-encoded Markdown 
 - **No dependencies and no tooling.** Plain HTML, CSS and vanilla JS (IIFE, `'use strict'`). No npm, bundler, framework or tests. Don't add any unless you're asked to.
 - **The Markdown is the only content source.** Don't hard-code framework text in the portal. Derive it from the Markdown so content edits need only a rebuild.
 - **Supported Markdown subset:** headings, paragraphs, lists, tables (with `:---:` centering), task lists (`- [ ]` become tickable gate checklists), blockquotes, `mermaid` code blocks, inline bold, italic, code and links. Check that anything else renders in the portal before you use it.
-- **Browser storage keys** are versioned and prefixed `cadf.`: `cadf.checks.v1`, `cadf.theme.v1`, `cadf.projects.v1`, `cadf.canvasRole.v1`. If you change a stored data shape, bump the version instead of breaking existing saved data.
+- **Browser storage keys** are versioned and prefixed `cadf.`: `cadf.checks.v1`, `cadf.theme.v1`, `cadf.projects.v1`, `cadf.canvasRole.v1` (the canvas owner filter in `workspace.js`). If you change a stored data shape, bump the version instead of breaking existing saved data.
 - **Escape all user and Markdown text** with `esc()` / `inline()` before inserting it as HTML. Imports are capped (`MAX_IMPORT` 1 MB, `MAX_STR` 20,000 chars).
 - **Styling follows xDS** ([DESIGN.md](DESIGN.md)). Use the CSS custom properties at the top of `styles.css`, not raw colour values. Support light and dark mode. Keep the portal keyboard accessible and print friendly.
 - **Mermaid** loads from `portal/vendor/mermaid.esm.min.mjs` if present, then falls back to the jsDelivr CDN (Mermaid 11). Fonts load from `portal/fonts/`, with Arial as the fallback. Both folders are optional and not committed.

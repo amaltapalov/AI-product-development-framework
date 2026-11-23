@@ -10,7 +10,7 @@ Plain HTML, CSS and JavaScript: no framework, no npm, no build server.
 | `build.py` | Inlines the framework markdown into `template.html` and writes `index.html` |
 | `template.html` | Page shell (header, sidebar, footer) |
 | `styles.css` | All styling. xDS tokens (light and dark) are in the block at the top. |
-| `app.js` | Markdown rendering, chapters, routing, role picker, gate checklists, diagrams, search |
+| `app.js` | Markdown rendering, chapters, routing, role panels, gate checklists, diagrams, search |
 | `workspace.js` | Fillable templates: AI Use Case Canvas, evaluation sheet, critique questions, projects, export and import |
 | `index.html` | Generated output. Don't edit by hand. |
 | `fonts/` | *Optional.* Put the xDS `VoltaModernDisplay-55Roman/65Medium/75Bold.woff2` files here. Without them, text uses Arial. |
@@ -51,10 +51,10 @@ Diagrams load Mermaid from `vendor/` first, then from the jsDelivr CDN. If neith
 ## Features
 
 - Chapter cards, a numbered chapter sidebar and a contents list that follows your scrolling
-- **My role** picker (header, home page role cards, or the panel on each phase): shows what your role does and hands over in each phase, and highlights your row or column in every role table
-- Exit-gate checklists you can tick; progress is saved in the browser and shown on the cards
+- Role cards on the home page and a role panel on each phase showing who leads, contributes and reviews
+- Exit-gate checklists you can tick; progress is saved in the browser
 - Fillable templates, saved per named project in the browser (`cadf.projects.v1` in localStorage):
-  - **AI Use Case Canvas** on the Templates page, plus each phase's rows just before its exit gate. Structured inputs where they help (interaction model, capabilities, boundaries, extra checks, metrics, release readiness); each row can be marked agreed and shows a worked example.
+  - **AI Use Case Canvas** on the Templates page. Structured inputs where they help (interaction model, capabilities, boundaries, extra checks, metrics, release readiness); each row can be marked agreed and shows a worked example.
   - **Evaluation sheet** with pass/fail per criterion, critical failures, pass rate against the 90% or 95% threshold, a ship verdict and a capability × case type coverage grid.
   - **Critique questions** with Yes / No / Unsure and notes.
   - Export as Markdown (copy or download), JSON (backup, re-importable) or CSV (evaluation sheet).

@@ -72,7 +72,7 @@
       summary: 'The AI Use Case Canvas, the evaluation sheet and design critique questions.' },
     { slug: 'adoption', group: 'Running it', title: 'Adoption', match: [/^Adoption/i],
       summary: 'Align, pilot, review, refine, scale, and how we judge the framework itself.' },
-    { slug: 'about', group: 'Running it', title: 'About this version', match: [/^Open questions/i, /^What changed/i, /^Sources/i],
+    { slug: 'about', group: 'Running it', title: 'About this version', hidden: true, match: [/^Open questions/i, /^What changed/i, /^Sources/i],
       summary: 'Open questions for the team, what changed in this version, and sources.' },
   ];
   const CHAPTERS = [];
@@ -101,6 +101,7 @@
   let n = 0;
   CHAPTERS.forEach((c, i) => { c.index = i; c.num = c.phase ? 'P' + c.phase : String(++n).padStart(2, '0'); });
   const bySlug = Object.fromEntries(CHAPTERS.map(c => [c.slug, c]));
+  const listed = CHAPTERS.filter(c => !c.hidden); // hidden chapters stay routable but unlisted
   const phaseByNum = Object.fromEntries(CHAPTERS.filter(c => c.phase).map(c => [c.phase, c]));
   // Full-width pages that aren't chapters (e.g. TL;DR), registered by other scripts.
   const VIEWS = {};
@@ -490,7 +491,7 @@
         <div class="wrap">
           <div class="section-head"><div><h2 id="g-run">Running it.</h2>
             <p>Copy-ready templates, the pilot plan, open questions and the change log.</p></div></div>
-          <div class="grid grid--3">${CHAPTERS.filter(c => c.group === 'Running it').map(card).join('')}</div>
+          <div class="grid grid--3">${listed.filter(c => c.group === 'Running it').map(card).join('')}</div>
         </div>
       </section>`;
 
@@ -522,7 +523,8 @@
     const lede = c.phase ? inline(c.goal || '') : esc(c.summary || '');
     const facts = c.phase && c.facts.length
       ? `<div class="hero-facts">${c.facts.map(f => `<div class="card hero-fact"><b>${esc(f.label)}</b><span>${inline(f.value)}</span></div>`).join('')}</div>` : '';
-    const prev = CHAPTERS[c.index - 1], next = CHAPTERS[c.index + 1];
+    const pos = listed.indexOf(c);
+    const prev = pos > 0 ? listed[pos - 1] : null, next = pos >= 0 ? listed[pos + 1] : null;
     const phaseCount = CHAPTERS.filter(x => x.phase).length;
 
     $main.innerHTML = `
@@ -557,7 +559,7 @@
   }
 
   function renderSidebar(current) {
-    const groups = [...new Set(CHAPTERS.map(c => c.group))];
+    const groups = [...new Set(listed.map(c => c.group))];
     const here = currentRoute().slug;
     const views = Object.entries(VIEWS);
     $sidebar.innerHTML = (views.length ? `
@@ -565,7 +567,7 @@
         ${views.map(([slug, v]) => `<li class="${here === slug ? 'is-current' : ''}"><a href="#/${slug}"${here === slug ? ' aria-current="page"' : ''}><span class="num">•</span><span>${esc(v.title)}</span></a></li>`).join('')}
       </ol></div>` : '') + groups.map(g => `
       <div class="sidebar__group"><p class="sidebar__group-title">${esc(g)}</p><ol>
-        ${CHAPTERS.filter(c => c.group === g).map(c => {
+        ${listed.filter(c => c.group === g).map(c => {
           const p = progressOf(c);
           const isCur = current && c.slug === current.slug;
           const toc = isCur && c.toc.length ? `<ul class="toc">${c.toc.map(t => `<li><a href="#/${c.slug}/${t.id}" data-toc="${t.id}"${t.level === 3 && c.secs.length > 1 ? ' style="padding-left:18px"' : ''}>${esc(t.text)}</a></li>`).join('')}</ul>` : '';
@@ -742,7 +744,7 @@
   const index = [];
   (function buildIndex() {
     const tmp = document.createElement('div');
-    for (const c of CHAPTERS) {
+    for (const c of listed) {
       tmp.innerHTML = c.html.replace(/<div class="gate-progress">[\s\S]*?<\/button><\/div>/g, '').replace(/<\/(td|th|li|p|h3|h4|label)>/g, ' </$1>');
       let sec = { chapter: c, id: null, title: c.title, text: c.goal ? plain(c.goal) : (c.summary || '') };
       index.push(sec);
@@ -819,7 +821,7 @@
   /* Footer */
   document.getElementById('footer').innerHTML = `
     <span>${esc(docTitle)} · ${inline(byline)}</span>
-    <span>Styled with the xDS design system.${bySlug.about ? ' <a href="#/about">What changed</a>' : ''}</span>`;
+    <span>Styled with the xDS design system.</span>`;
 
   /* ------------------------------------------------------------------
      Routing

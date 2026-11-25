@@ -7,6 +7,7 @@ template.html, producing index.html. Standard library only.
     python3 portal/build.py              # uses the newest version file
     python3 portal/build.py path/to/other-version.md
 """
+import hashlib
 import json
 import re
 import pathlib
@@ -35,6 +36,14 @@ def main() -> None:
         sys.exit(f"Placeholder {PLACEHOLDER} not found in template.html")
     payload = json.dumps(md, ensure_ascii=False).replace("</", "<\\/")
     out = template.replace(PLACEHOLDER, payload)
+    # Version local assets so browsers don't keep serving stale copies after a rebuild.
+    def bust(m: re.Match) -> str:
+        f = HERE / m.group(2)
+        if not f.is_file():
+            return m.group(0)
+        v = hashlib.sha1(f.read_bytes()).hexdigest()[:10]
+        return f'{m.group(1)}="{m.group(2)}?v={v}"'
+    out = re.sub(r'(src|href)="([\w.-]+\.(?:js|css))"', bust, out)
     (HERE / "index.html").write_text(out, encoding="utf-8")
     print(f"Built {HERE / 'index.html'} from {source.name} ({len(md):,} chars)")
 

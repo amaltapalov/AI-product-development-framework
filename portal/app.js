@@ -103,6 +103,8 @@
   CHAPTERS.forEach((c, i) => { c.index = i; c.num = c.phase ? 'P' + c.phase : String(++n).padStart(2, '0'); });
   const bySlug = Object.fromEntries(CHAPTERS.map(c => [c.slug, c]));
   const phaseByNum = Object.fromEntries(CHAPTERS.filter(c => c.phase).map(c => [c.phase, c]));
+  // Full-width pages that aren't chapters (e.g. TL;DR), registered by other scripts.
+  const VIEWS = {};
 
   /* ------------------------------------------------------------------
      Icons (lucide-style outlines)
@@ -557,7 +559,12 @@
 
   function renderSidebar(current) {
     const groups = [...new Set(CHAPTERS.map(c => c.group))];
-    $sidebar.innerHTML = groups.map(g => `
+    const here = currentRoute().slug;
+    const views = Object.entries(VIEWS);
+    $sidebar.innerHTML = (views.length ? `
+      <div class="sidebar__group"><p class="sidebar__group-title">Overview</p><ol>
+        ${views.map(([slug, v]) => `<li class="${here === slug ? 'is-current' : ''}"><a href="#/${slug}"${here === slug ? ' aria-current="page"' : ''}><span class="num">•</span><span>${esc(v.title)}</span></a></li>`).join('')}
+      </ol></div>` : '') + groups.map(g => `
       <div class="sidebar__group"><p class="sidebar__group-title">${esc(g)}</p><ol>
         ${CHAPTERS.filter(c => c.group === g).map(c => {
           const p = progressOf(c);
@@ -825,9 +832,25 @@
   let lastSlug = null;
   function route() {
     const { slug, section } = currentRoute();
-    const c = bySlug[slug];
+    const view = VIEWS[slug];
+    const c = view ? null : bySlug[slug];
     document.body.classList.toggle('is-home', !c);
-    document.querySelectorAll('.top-nav a').forEach(a => a.classList.toggle('is-active', a.dataset.nav === (c ? c.slug : 'home')));
+    document.querySelectorAll('.top-nav a').forEach(a => a.classList.toggle('is-active', a.dataset.nav === (view || c ? slug : 'home')));
+    if (view) {
+      if (lastSlug === slug && section) {
+        const el = document.getElementById(section);
+        if (el) { el.scrollIntoView(); return; }
+      }
+      lastSlug = slug;
+      document.title = `${view.title} · ${docTitle}`;
+      if (observer) observer.disconnect();
+      view.render($main, section);
+      document.dispatchEvent(new CustomEvent('cadf:render', { detail: { chapter: null, view: slug } }));
+      const el = section && document.getElementById(section);
+      if (el) el.scrollIntoView(); else window.scrollTo(0, 0);
+      $main.focus({ preventScroll: true });
+      return;
+    }
     if (!c) { lastSlug = null; renderHome(); window.scrollTo(0, 0); return; }
     if (lastSlug === slug && section) {
       const el = document.getElementById(section);
@@ -841,7 +864,12 @@
 
   window.CADF = {
     esc, inline, plain, slugify, svg, store, tablesIn, roleOf, bySlug, CHAPTERS, ROLES, docTitle, version,
+    sections, oneSentence, phaseByNum, ROLE_ICONS,
     current: () => bySlug[currentRoute().slug] || null,
+    registerView(slug, view) {
+      VIEWS[slug] = view;
+      if (currentRoute().slug === slug) { lastSlug = null; route(); }
+    },
   };
   route();
 })();

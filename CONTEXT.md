@@ -24,6 +24,7 @@ Author: Amal Tapalov. Current version: **v1.2** (draft for team review, November
 | `portal/template.html` | Page shell. Contains the `/*__FRAMEWORK_MD__*/` placeholder. |
 | `portal/app.js` | Markdown renderer, chapters, hash routing, role panels, gate checklists, Mermaid, search. Exposes `window.CADF`. |
 | `portal/workspace.js` | Fillable templates (canvas, evaluation sheet, critique questions), projects, export and import. Reads from `window.CADF`. |
+| `portal/tldr.js` | The TL;DR page (`#/tldr`): the framework in five presentable sections with charts and diagrams. Registered with `CADF.registerView()`. |
 | `portal/styles.css` | All styling. xDS tokens for light and dark mode are at the top. |
 | `portal/index.html` | **Generated, but committed.** Never edit by hand. |
 | `skills/copywriting/` | Copywriting agent skill. `.claude/skills/copywriting/` is an identical copy for Claude Code. Keep both in sync. |
@@ -61,7 +62,7 @@ Framework vX.Y.md ──build.py──▶ template.html + JSON-encoded Markdown 
 ## Conventions and constraints
 
 - **No dependencies and no tooling.** Plain HTML, CSS and vanilla JS (IIFE, `'use strict'`). No npm, bundler, framework or tests. Don't add any unless you're asked to.
-- **The Markdown is the only content source.** Don't hard-code framework text in the portal. Derive it from the Markdown so content edits need only a rebuild.
+- **The Markdown is the only content source.** Don't hard-code framework text in the portal. Derive it from the Markdown so content edits need only a rebuild. The one exception is `tldr.js`: it reads lists and tables from the Markdown, but its framing copy and diagram labels are hand-written, so review it when the framework changes.
 - **Supported Markdown subset:** headings, paragraphs, lists, tables (with `:---:` centering), task lists (`- [ ]` become tickable gate checklists), blockquotes, `mermaid` code blocks, inline bold, italic, code and links. Check that anything else renders in the portal before you use it.
 - **Browser storage keys** are versioned and prefixed `cadf.`: `cadf.checks.v1`, `cadf.theme.v1`, `cadf.projects.v1`, `cadf.canvasRole.v1` (the canvas owner filter in `workspace.js`). If you change a stored data shape, bump the version instead of breaking existing saved data.
 - **Escape all user and Markdown text** with `esc()` / `inline()` before inserting it as HTML. Imports are capped (`MAX_IMPORT` 1 MB, `MAX_STR` 20,000 chars).

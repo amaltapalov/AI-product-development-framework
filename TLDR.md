@@ -1,6 +1,6 @@
 # TL;DR · Conversational AI Design Framework
 
-The short version of the framework (v1.2) in five sections. Each takes about six minutes, so the whole page fits a 30-minute talk. Every section has one key message, the main points, the techniques to use, and a diagram or chart you can scan.
+The short version of the framework in five sections. Each takes about six minutes, so the whole page fits a 30-minute talk. Every section has one key message, the main points, the techniques to use, and a diagram or chart you can scan.
 
 > **In one sentence:** seven phases that help Product, Design, Development and Data Science build conversational AI that solves a real problem, gives correct answers and fails safely.
 
@@ -410,5 +410,5 @@ flowchart LR
 - **Layout per section:** kicker (phases covered), title, key message, then main points on the left and the diagram or chart on the right. End with the "Say it in one line" takeaway.
 - **Links:** each section links to the full chapters it summarizes (section 1 → Principles and Rules; 2 → Lifecycle and Roles; 3 → Phases 1–2; 4 → Phases 3–4; 5 → Phases 5–7).
 - **Charts:** the `pie` and `xychart-beta` blocks need Mermaid 11. Check they render in the portal, or redraw them as simple HTML bars with the xDS tokens.
-- **Keep it in sync:** the numbers here (14 canvas rows, 90% and 95% thresholds, 5 to 10 cases per capability) come from framework v1.2. Check them when the framework changes.
+- **Keep it in sync:** the numbers here (14 canvas rows, 90% and 95% thresholds, 5 to 10 cases per capability) come from the framework. Check them when the framework changes.
 - **This file is not part of the build.** `portal/build.py` only reads `Conversational AI Design Framework v*.md`, so `TLDR.md` won't appear in the portal until the page is built from it.

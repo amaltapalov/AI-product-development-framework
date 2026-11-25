@@ -626,7 +626,7 @@
       (navigator.clipboard ? navigator.clipboard.writeText(md) : Promise.reject())
         .then(() => flash('Copied as Markdown'), () => download(fileBase() + '.md', md, 'text/markdown'));
     } else if (a === 'export-md') download(fileBase() + '.md', toMarkdown(), 'text/markdown');
-    else if (a === 'export-json') download(fileBase() + '.json', JSON.stringify({ format: 'cadf-project', version: 1, framework: C.version, exported: new Date().toISOString(), project: p }, null, 2), 'application/json');
+    else if (a === 'export-json') download(fileBase() + '.json', JSON.stringify({ format: 'cadf-project', version: 1, framework: C.docTitle, exported: new Date().toISOString(), project: p }, null, 2), 'application/json');
     else if (a === 'import') { const f = el.closest('.ws-bar').querySelector('[data-ws="file"]'); if (f) f.click(); }
   }
 

@@ -38,8 +38,7 @@
      ------------------------------------------------------------------ */
   const lines = MD.replace(/\r\n/g, '\n').split('\n');
   const docTitle = (lines.find(l => l.startsWith('# ')) || '# Conversational AI Design Framework').slice(2).trim();
-  const version = (docTitle.match(/v[\d.]+/) || [''])[0];
-  const docName = docTitle.replace(/\s*v[\d.]+$/, '');
+  const docName = docTitle;
   const byline = (lines.slice(1, 6).find(l => l.includes('·')) || '').trim();
 
   const preamble = [];
@@ -422,7 +421,7 @@
       <section class="home-hero">
         <div class="wrap">
           <div>
-            <span class="tag">Guidebook ${esc(version)}</span>
+            <span class="tag">Updated ${esc(byline.split('·')[0].trim())}</span>
             <h1>${esc(docName.replace(/ Design Framework$/, ''))}<br>Design Framework.</h1>
             <p class="lede">${esc(ucfirst(lede))}</p>
             <div class="btn-row">
@@ -837,17 +836,13 @@
     document.body.classList.toggle('is-home', !c);
     document.querySelectorAll('.top-nav a').forEach(a => a.classList.toggle('is-active', a.dataset.nav === (view || c ? slug : 'home')));
     if (view) {
-      if (lastSlug === slug && section) {
-        const el = document.getElementById(section);
-        if (el) { el.scrollIntoView(); return; }
-      }
+      if (lastSlug === slug && view.update) { view.update(section); return; }
       lastSlug = slug;
       document.title = `${view.title} · ${docTitle}`;
       if (observer) observer.disconnect();
       view.render($main, section);
       document.dispatchEvent(new CustomEvent('cadf:render', { detail: { chapter: null, view: slug } }));
-      const el = section && document.getElementById(section);
-      if (el) el.scrollIntoView(); else window.scrollTo(0, 0);
+      window.scrollTo(0, 0);
       $main.focus({ preventScroll: true });
       return;
     }
@@ -863,7 +858,7 @@
   window.addEventListener('hashchange', route);
 
   window.CADF = {
-    esc, inline, plain, slugify, svg, store, tablesIn, roleOf, bySlug, CHAPTERS, ROLES, docTitle, version,
+    esc, inline, plain, slugify, svg, store, tablesIn, roleOf, bySlug, CHAPTERS, ROLES, docTitle,
     sections, oneSentence, phaseByNum, ROLE_ICONS,
     current: () => bySlug[currentRoute().slug] || null,
     registerView(slug, view) {

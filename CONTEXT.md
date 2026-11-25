@@ -11,7 +11,7 @@ The repository has two parts:
 1. **The framework itself**, written as Markdown. This is the single source of truth for all content.
 2. **The portal**, a static web reader for the framework. It's built from the Markdown and styled with the xDS design system.
 
-Author: Amal Tapalov. Current version: **v1.2** (draft for team review, November 2026).
+Author: Amal Tapalov. Last updated: 25 November 2026.
 
 ## Repository map
 
@@ -24,7 +24,7 @@ Author: Amal Tapalov. Current version: **v1.2** (draft for team review, November
 | `portal/template.html` | Page shell. Contains the `/*__FRAMEWORK_MD__*/` placeholder. |
 | `portal/app.js` | Markdown renderer, chapters, hash routing, role panels, gate checklists, Mermaid, search. Exposes `window.CADF`. |
 | `portal/workspace.js` | Fillable templates (canvas, evaluation sheet, critique questions), projects, export and import. Reads from `window.CADF`. |
-| `portal/tldr.js` | The TL;DR page (`#/tldr`): the framework in five presentable sections with charts and diagrams. Registered with `CADF.registerView()`. |
+| `portal/tldr.js` | The TL;DR deck (`#/tldr/<slide>`): the framework as five one-screen slides, navigated with tabs, buttons, ←/→ or PageUp/PageDown. Registered with `CADF.registerView()`. |
 | `portal/styles.css` | All styling. xDS tokens for light and dark mode are at the top. |
 | `portal/index.html` | **Generated, but committed.** Never edit by hand. |
 | `skills/copywriting/` | Copywriting agent skill. `.claude/skills/copywriting/` is an identical copy for Claude Code. Keep both in sync. |
@@ -68,7 +68,7 @@ Framework vX.Y.md ──build.py──▶ template.html + JSON-encoded Markdown 
 - **Escape all user and Markdown text** with `esc()` / `inline()` before inserting it as HTML. Imports are capped (`MAX_IMPORT` 1 MB, `MAX_STR` 20,000 chars).
 - **Styling follows xDS** ([DESIGN.md](DESIGN.md)). Use the CSS custom properties at the top of `styles.css`, not raw colour values. Support light and dark mode. Keep the portal keyboard accessible and print friendly.
 - **Mermaid** loads from `portal/vendor/mermaid.esm.min.mjs` if present, then falls back to the jsDelivr CDN (Mermaid 11). Fonts load from `portal/fonts/`, with Arial as the fallback. Both folders are optional and not committed.
-- **Writing style for the framework and docs:** plain English, short sentences, active voice, "the team" or "you". v1.2 deliberately shortened and simplified the text, so keep it that way. Use the `copywriting` skill for larger rewrites.
+- **Writing style for the framework and docs:** plain English, short sentences, active voice, "the team" or "you". The latest rewrite deliberately shortened and simplified the text, so keep it that way. Use the `copywriting` skill for larger rewrites.
 
 ## Gotchas
 

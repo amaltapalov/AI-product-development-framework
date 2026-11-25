@@ -8,7 +8,7 @@ The repository has the framework itself (as Markdown) and an interactive web por
 
 | Path | Contents |
 | --- | --- |
-| `Conversational AI Design Framework v1.2.md` | Current version of the framework (draft for team review) |
+| `Conversational AI Design Framework v1.2.md` | The framework (Markdown source) |
 | `Conversational AI Design Framework v1.1.md` | Previous version |
 | `DESIGN.md` | Reference for the xDS design system the portal is styled with |
 | [`portal/`](portal/) | Interactive reading portal in plain HTML, CSS and JavaScript. See [portal/README.md](portal/README.md). |

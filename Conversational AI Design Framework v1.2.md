@@ -1,6 +1,6 @@
-# Conversational AI Design Framework v1.2
+# Conversational AI Design Framework
 
-Nov 20, 2026 · @Amal Tapalov · Draft for team review
+Nov 25, 2026 · @Amal Tapalov
 
 > **In one sentence:** a seven-step way for Product, Design, Development and Data Science to build conversational and generative AI products that solve a real problem, give correct answers and fail safely.
 
@@ -740,7 +740,7 @@ flowchart LR
 ## 15. Open questions
 
 - [ ] Who are the named contacts for Governance, Data Protection and Pharmacovigilance?
-- [ ] Which product team pilots v1.2, and on which product?
+- [ ] Which product team pilots the framework, and on which product?
 - [ ] Who owns the Pattern Catalogue day to day?
 - [ ] Are the 90% and 95% ship thresholds right for our first products?
 - [ ] Does the evaluation start in a shared spreadsheet, or in the release pipeline from day one?
@@ -749,7 +749,7 @@ flowchart LR
 
 ---
 
-## 16. What changed in v1.2
+## 16. What changed
 
 - **Removed risk tiers.** Every product now follows the same base rules, plus three yes/no questions that add extra checks only where needed.
 - **Added four clear roles:** Product owner, Design, Development and Data Science. Each phase shows who leads and what each role hands over.
@@ -763,4 +763,4 @@ flowchart LR
 - [Microsoft HAX Toolkit: Guidelines for Human-AI Interaction](https://www.microsoft.com/en-us/haxtoolkit/ai-guidelines/)
 - [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework)
 - [Google PAIR: People + AI Guidebook](https://pair.withgoogle.com/guidebook/)
-- Conversational AI Design Framework v1 and v1.1 (Amal Tapalov, November 2026)
+- Earlier versions of the Conversational AI Design Framework (Amal Tapalov, November 2026)

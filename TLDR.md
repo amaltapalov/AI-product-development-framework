@@ -228,7 +228,7 @@ xychart-beta
 
 ```mermaid
 flowchart LR
-    A["User states<br/>what they need"] --> B["AI interprets"]
+    A["Users state<br/>what they need"] --> B["AI interprets"]
     B --> C{"Clear enough?"}
     C -- "No or unsure" --> R["Recovery:<br/>clarify or confirm"]
     R --> A

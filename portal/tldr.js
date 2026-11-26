@@ -171,7 +171,7 @@
           <div class="sl-models">${models.map(([ic, t, d]) => `
             <div class="sl-model">${tile(ic)}<b>${t}</b><span>${d}</span></div>`).join('')}
           </div>
-          <p class="sl-note">${svg(I.alert, 16)}<span><b>No approved data with an owner?</b> Fix the data first. Stopping here is a good result.</span></p>
+          <p class="sl-note">${svg(I.alert, 16)}<span><b>No approved data with an owner?</b><br>Fix the data first. Stopping here is a good result.</span></p>
         </div>
         <div class="sl-panel">
           ${label('Define', 'What exactly may the AI do?')}
@@ -190,7 +190,7 @@
   function loopSvg() {
     const cx = 300, cy = 196, r = 140;
     const pt = (a, rr = r) => [cx + rr * Math.cos(a * Math.PI / 180), cy + rr * Math.sin(a * Math.PI / 180)].map(v => +v.toFixed(1));
-    const nodes = [['User states', 'what they need'], ['AI interprets', 'the request'], ['Gathers context,', 'reasons or acts'], ['Shows the result', 'and its source'], ['Offers a', 'next step']];
+    const nodes = [['Users state', 'what they need'], ['AI interprets', 'the request'], ['Gathers context,', 'reasons or acts'], ['Shows the result', 'and its source'], ['Offers a', 'next step']];
     const ang = [-90, -18, 54, 126, 198];
     let s = `<circle class="ring" cx="${cx}" cy="${cy}" r="${r}"/>`;
     ang.forEach(a => { const [x, y] = pt(a + 36); s += `<path class="chev" d="M-5 -6 L4 0 L-5 6" transform="translate(${x} ${y}) rotate(${a + 126})"/>`; });
